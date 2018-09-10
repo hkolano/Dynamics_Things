@@ -17,7 +17,7 @@ D = .0427;              % diameter of a golf ball, in m
 rho = 1.29;             % density of the air, kg/m3
 Cd = .25;               % coefficient of drag
 m = .0459;              % mass in kg
-Init_speed = 30;       % in mph, on the j-k plane
+Init_speed = 130;       % in mph, on the j-k plane
 Init_angle = 45;        % angle the ball is hit, up from j
 mph_to_mps = .447;      % conversion rate for mph to m/s
 drag_c = -.5*rho*Cd*pi*D^2/4;
@@ -62,32 +62,32 @@ final_z = zout(end,5)
 acc_x = acc_x'; acc_y = acc_y'; acc_z = acc_z';
 
 
-%Start the graph
+%3D Trajectory Graph
 figure (1) 
 plot3(zout(:,1),zout(:,3), zout(:,5))
 axis equal
-title('Displacements')
+title('Ball Trajectory')
 zlabel('z Displ (m)')
 ylabel('y Displ (m)')
 xlabel('x Displ (m)')
-legend('ball trajectory')
 
+%Position/Velocity/Acceleration Graphs
 figure(2)
-ax1 = subplot(3,1,1)
+ax1 = subplot(3,1,1);
 plot(t,zout(:,1)) 
 hold on
 plot(t, zout(:,3)), plot(t, zout(:,5))
 ylabel('Displacement (m)')
 legend('x-dir', 'y-dir', 'z-dir')
 
-ax2 = subplot(3,1,2)
+ax2 = subplot(3,1,2);
 plot (t, zout(:,2))
 hold on
 plot(t, zout(:,4)), plot(t, zout(:,6))
 ylabel('Velocity (m/s)')
 legend('x-dir', 'y-dir', 'z-dir')
 
-ax3 = subplot(3,1,3) 
+ax3 = subplot(3,1,3); 
 plot(ode_ts, acc_x)
 hold on
 plot(ode_ts, acc_y), plot(ode_ts, acc_z)
