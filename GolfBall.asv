@@ -32,7 +32,7 @@ z6_0 = 10;       %initial z velocity
 Z_0 = [z1_0, z2_0, z3_0, z4_0, z5_0, z6_0];
 
 %define the wind
-w_x = 10;
+w_x = 0;
 w_y = 0;
 w_z = 0;
 
@@ -48,9 +48,8 @@ acc_z = [];
 options = odeset('Events', @event_stop);
 [t, zout] = ode45(@initial_spring, T_span, Z_0, options);
 
-acc_x = acc_x(1:length(t))';
-acc_y = acc_y(1:length(t))';
-acc_z = acc_z(1:length(t))';
+acc_x = acc_x(1:length(t))'
+acc_x = acc_x'
 
 %Start the graph
 figure (1) 
@@ -75,10 +74,7 @@ ylabel('Velocity (m/s)')
 legend('x-dir', 'y-dir', 'z-dir')
 
 subplot(3,1,3), plot(t, acc_x)
-hold on
-plot(t, acc_y), plot(t, acc_z)
-ylabel('Acceleration (m/s2)')
-legend('x-dir', 'y-dir', 'z-dir')
+ylabel('Z displ (m)')
 %
 xlabel('Time (sec)')
 
@@ -99,7 +95,7 @@ function dzdt = initial_spring(T,Z)
     dz5dt = Z(6);
     dz6dt = drag_c*V*(Z(6)-w_z)/m-g;
 
-    acc_x = [acc_x, dz2dt]; acc_y = [acc_y, dz4dt]; acc_z = [acc_z, dz6dt];
+    acc_x = [acc_x, dz2dt];
     dzdt = [dz1dt;dz2dt;dz3dt;dz4dt;dz5dt;dz6dt];
 
 end
