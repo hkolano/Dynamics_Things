@@ -10,12 +10,16 @@ clear all
 close all
 
 % Define system parameters
+t_step = .1;
 
 g = 9.81;               % gravitational acceleration in m/s^2
 D = .0427;              % diameter of a golf ball, in m
 rho = 1.29;             % density of the air, kg/m3
 Cd = .25;               % coefficient of drag
 m = .0459;              % mass in kg
+Init_speed = 30;       % in mph, on the j-k plane
+Init_angle = 45;        % angle the ball is hit, up from j
+mph_to_mps = .447;      % conversion rate for mph to m/s
 drag_c = -.5*rho*Cd*pi*D^2/4;
 
 % Define state variables: 
@@ -24,22 +28,23 @@ drag_c = -.5*rho*Cd*pi*D^2/4;
 
 % Specify initial conditions. Inital displacements are taken to be zero. 
 z1_0 = 0;           
-z2_0 = 10;       %initial x velocity           
+z2_0 = 0;       %initial x velocity           
 z3_0 = 0;       
-z4_0 = 0;		%initial y velocity
+z4_0 = Init_speed*mph_to_mps*cosd(Init_angle);		%initial y velocity
 z5_0 = 0;
-z6_0 = 10;       %initial z velocity
+z6_0 = Init_speed*mph_to_mps*sind(Init_angle);       %initial z velocity
 Z_0 = [z1_0, z2_0, z3_0, z4_0, z5_0, z6_0];
 
 %define the wind
-w_x = -10;
-w_y = 2;
+w_x = 0;
+w_y = 0;
 w_z = 0;
 
 %define time steps
-T_span = [0: 0.1: 25];  
+T_span = [0: t_step: 25];  
 
 %keep track of acceleration
+ode_ts = []
 acc_x = [];
 acc_y = [];
 acc_z = [];
@@ -48,9 +53,14 @@ acc_z = [];
 options = odeset('Events', @event_stop);
 [t, zout] = ode45(@initial_spring, T_span, Z_0, options);
 
-acc_x = acc_x(1:length(t))';
-acc_y = acc_y(1:length(t))';
-acc_z = acc_z(1:length(t))';
+%Display final values
+final_x = zout(end,1)
+final_y = zout(end,3)
+final_z = zout(end,5) 
+
+%calculate accelerations from velocities
+acc_x = acc_x'; acc_y = acc_y'; acc_z = acc_z';
+
 
 %Start the graph
 figure (1) 
@@ -63,24 +73,28 @@ xlabel('x Displ (m)')
 legend('ball trajectory')
 
 figure(2)
-subplot(3,1,1), plot(t,zout(:,1)) 
+ax1 = subplot(3,1,1)
+plot(t,zout(:,1)) 
 hold on
 plot(t, zout(:,3)), plot(t, zout(:,5))
 ylabel('Displacement (m)')
 legend('x-dir', 'y-dir', 'z-dir')
 
-subplot(3,1,2), plot (t, zout(:,2))
+ax2 = subplot(3,1,2)
+plot (t, zout(:,2))
 hold on
 plot(t, zout(:,4)), plot(t, zout(:,6))
 ylabel('Velocity (m/s)')
 legend('x-dir', 'y-dir', 'z-dir')
 
-subplot(3,1,3), plot(t, acc_x)
+ax3 = subplot(3,1,3) 
+plot(ode_ts, acc_x)
 hold on
-plot(t, acc_y), plot(t, acc_z)
+plot(ode_ts, acc_y), plot(ode_ts, acc_z)
 ylabel('Acceleration (m/s2)')
 legend('x-dir', 'y-dir', 'z-dir')
 %
+linkaxes([ax1, ax2, ax3], 'x')
 xlabel('Time (sec)')
 
 %
@@ -99,7 +113,8 @@ function dzdt = initial_spring(T,Z)
     dz4dt = drag_c*V*(Z(4)-w_y)/m;
     dz5dt = Z(6);
     dz6dt = drag_c*V*(Z(6)-w_z)/m-g;
-
+    
+    ode_ts = [ode_ts, T];
     acc_x = [acc_x, dz2dt]; acc_y = [acc_y, dz4dt]; acc_z = [acc_z, dz6dt];
     dzdt = [dz1dt;dz2dt;dz3dt;dz4dt;dz5dt;dz6dt];
 
