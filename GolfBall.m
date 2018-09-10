@@ -32,8 +32,8 @@ z6_0 = 10;       %initial z velocity
 Z_0 = [z1_0, z2_0, z3_0, z4_0, z5_0, z6_0];
 
 %define the wind
-w_x = 10;
-w_y = 0;
+w_x = -10;
+w_y = 2;
 w_z = 0;
 
 %define time steps
@@ -55,11 +55,12 @@ acc_z = acc_z(1:length(t))';
 %Start the graph
 figure (1) 
 plot3(zout(:,1),zout(:,3), zout(:,5))
-axis tight
+axis equal
 title('Displacements')
 zlabel('z Displ (m)')
 ylabel('y Displ (m)')
 xlabel('x Displ (m)')
+legend('ball trajectory')
 
 figure(2)
 subplot(3,1,1), plot(t,zout(:,1)) 
