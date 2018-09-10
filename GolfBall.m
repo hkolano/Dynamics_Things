@@ -24,7 +24,7 @@ drag_c = -.5*rho*Cd*pi*D^2/4;
 
 % Specify initial conditions. Inital displacements are taken to be zero. 
 z1_0 = 0;           
-z2_0 = 2;       %initial x velocity           
+z2_0 = 10;       %initial x velocity           
 z3_0 = 0;       
 z4_0 = 0;		%initial y velocity
 z5_0 = 0;
@@ -45,11 +45,13 @@ options = odeset('Events', @event_stop);
 
 %Start the graph
 figure (1) 
-plot(zout(:,1), zout(:,5))
-title('Trajectory in Time')
-ylabel('z Displ (m)')
+plot3(zout(:,1),zout(:,3), zout(:,5))
+axis tight
+title('Displacements')
+zlabel('z Displ (m)')
+ylabel('y Displ (m)')
 xlabel('x Displ (m)')
-legend ('ode45')
+% legend ('ode45')
 %
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,11 +63,11 @@ function dzdt = initial_spring(T,Z)
     % z1 = x_i; z2 = x_j; z3 = x_k;
     % z4 = v_i; z5 = v_j; z6 = v_k;
     dz1dt = Z(2);
-    dz2dt = 0; %drag_c*V*(Z(2)-w_x)/m;
+    dz2dt = drag_c*V*(Z(2)-w_x)/m;
     dz3dt = Z(4);
-    dz4dt = 0; %%drag_c*V*(Z(4)-w_y)/m;
+    dz4dt = drag_c*V*(Z(4)-w_y)/m;
     dz5dt = Z(6);
-    dz6dt = -g; %%drag_c*V*(Z(6)-w_z)/m-g;
+    dz6dt = drag_c*V*(Z(6)-w_z)/m-g;
 
     dzdt = [dz1dt;dz2dt;dz3dt;dz4dt;dz5dt;dz6dt];
 
