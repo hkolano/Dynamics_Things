@@ -26,9 +26,9 @@ drag_c = -.5*rho*Cd*pi*D^2/4;
 z1_0 = 0;           
 z2_0 = 2;       %initial x velocity           
 z3_0 = 0;       
-z4_0 = 10;		%initial y velocity
+z4_0 = 0;		%initial y velocity
 z5_0 = 0;
-z6_0 = 0;       %initial z velocity
+z6_0 = 10;       %initial z velocity
 Z_0 = [z1_0, z2_0, z3_0, z4_0, z5_0, z6_0];
 
 %define the wind
@@ -45,10 +45,10 @@ options = odeset('Events', @event_stop);
 
 %Start the graph
 figure (1) 
-plot(zout(:,2), zout(:,4))
+plot(zout(:,1), zout(:,5))
 title('Trajectory in Time')
-ylabel('Vert Displ (m)')
-xlabel('Horz Displ (m)')
+ylabel('z Displ (m)')
+xlabel('x Displ (m)')
 legend ('ode45')
 %
 
@@ -61,11 +61,11 @@ function dzdt = initial_spring(T,Z)
     % z1 = x_i; z2 = x_j; z3 = x_k;
     % z4 = v_i; z5 = v_j; z6 = v_k;
     dz1dt = Z(2);
-    dz2dt = drag_c*V*(Z(2)-w_x)/m;
+    dz2dt = 0; %drag_c*V*(Z(2)-w_x)/m;
     dz3dt = Z(4);
-    dz4dt = drag_c*V*(Z(4)-w_y)/m-g;
+    dz4dt = 0; %%drag_c*V*(Z(4)-w_y)/m;
     dz5dt = Z(6);
-    dz6dt = drag_c*V*(Z(6)-w_z)/m;
+    dz6dt = -g; %%drag_c*V*(Z(6)-w_z)/m-g;
 
     dzdt = [dz1dt;dz2dt;dz3dt;dz4dt;dz5dt;dz6dt];
 
@@ -76,7 +76,7 @@ end
 function [eventvalue,stopthecalc, eventdir] = event_stop(T,Z)
      
         % stop when TopMass gets to L off the ground (spring unstretched)
-        eventvalue  =  Z(1);    %  ‘Events’ are detected when eventvalue=0
+        eventvalue  =  Z(5);    %  ‘Events’ are detected when eventvalue=0
         stopthecalc =  1;       %  Stop if event occurs
         eventdir    =  -1;       %  Detect only events with dydt<0
 end
