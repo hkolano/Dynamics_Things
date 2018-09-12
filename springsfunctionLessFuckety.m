@@ -57,6 +57,9 @@ options2 = odeset('Events', @event_stop2);
 plot(t2, zout2(:,3));
 plot(t2, zout2(:,1));
 
+%Normal Force
+Norm1 = -(zout(:,3)-zout(:,1)-L_0)*k
+
 %kinetic, potential, and total energy 
 all_vs_bottom = cat(1, zout(:,2), zout2(:,2));
 all_vs_top = cat(1, zout(:,4), zout2(:,4));
@@ -68,7 +71,7 @@ KE_top = 1/2.*mTop.*all_vs_top.^2;
 KE_bottom = 1/2.*mBottom.*all_vs_bottom.^2;
 PE_top =  mTop * g * all_pos_top;
 PE_bottom = mBottom * g * all_pos_bottom;
-E_of_spring = abs((all_pos_top - all_pos_bottom)-L_0).*k;
+E_of_spring = 0.5*((all_pos_top - all_pos_bottom)-L_0).^2*k;
 Etotal = KE_top + KE_bottom + PE_top + PE_bottom + E_of_spring;   
 
 figure (2)
@@ -83,6 +86,13 @@ title('Kinetic, Potential Energies')
 xlabel('Time (s)')
 ylabel('Energy (J)')
 legend('KE_top','KE_bottom', 'PE_top', 'PE_bottom', 'spring', 'total')
+
+%Plot normal force over time
+figure (3)
+plot(t, Norm1, 'g')
+title('Normal Force over Time')
+xlabel('Time (s)')
+ylabel('Force (N)')
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,9 +129,9 @@ end
 function [eventvalue,stopthecalc, eventdir] = event_stop(T,Z)
      
         % stop when TopMass gets to L off the ground (spring unstretched)
-        eventvalue  =  Z(3)-Z(1)-L_0;    %  ‘Events’ are detected when eventvalue=0
+        eventvalue  =  (Z(3)-Z(1)-L_0)*k - mBottom*g;    %  ‘Events’ are detected when eventvalue=0
         stopthecalc =  1;       %  Stop if event occurs
-        eventdir    =  0;       %  Detect only events with dydt<0
+        eventdir    =  1;       %  Detect only events with dydt<0
 end
       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

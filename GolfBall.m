@@ -13,7 +13,7 @@ close all
 t_step = .1;
 
 g = 9.81;               % gravitational acceleration in m/s^2
-D = .0427;              % diameter of a golf ball, in m
+D = .0427*2;              % diameter of a golf ball, in m
 rho = 1.29;             % density of the air, kg/m3
 Cd = .25;               % coefficient of drag
 m = .0459;              % mass in kg
@@ -44,7 +44,7 @@ w_z = 0;
 T_span = [0: t_step: 25];  
 
 %keep track of acceleration
-ode_ts = []
+ode_ts = [];
 acc_x = [];
 acc_y = [];
 acc_z = [];
@@ -66,13 +66,14 @@ acc_x = acc_x'; acc_y = acc_y'; acc_z = acc_z';
 figure (1) 
 plot3(zout(:,1),zout(:,3), zout(:,5))
 axis equal
-title('Ball Trajectory')
+title('Ball Trajectory with 15mph Side Wind')
 zlabel('z Displ (m)')
 ylabel('y Displ (m)')
 xlabel('x Displ (m)')
 
 %Position/Velocity/Acceleration Graphs
 figure(2)
+suptitle('Golf Ball States with 15mph Side Wind')
 ax1 = subplot(3,1,1);
 plot(t,zout(:,1)) 
 hold on
