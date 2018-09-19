@@ -36,7 +36,7 @@ z6_0 = Init_speed*mph_to_mps*sind(Init_angle);       %initial z velocity
 Z_0 = [z1_0, z2_0, z3_0, z4_0, z5_0, z6_0];
 
 %define the wind
-w_x = 0;
+w_x = 15*mph_to_mps;
 w_y = 0;
 w_z = 0;
 
